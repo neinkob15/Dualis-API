@@ -1,6 +1,6 @@
-# Dualis4Mail
+# Dualis API
 
-This is an unofficial client for dualis by DHBW built with Bash. This one file lets you retrieve all grades as json.<br/>
+This is an unofficial API for dualis by DHBW built with Bash. This one file lets you retrieve all grades as json.<br/>
 The interface can be used by all sorts of applications for automating things concerning grades.
 
 ## usage
