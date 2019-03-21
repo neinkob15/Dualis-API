@@ -8,14 +8,14 @@ do
 		u) username=$OPTARG;;
 		p) password=$OPTARG;;
 		h) echo
-		   echo "Aufruf:"
-		   echo " ./NOTEN.sh [Optionen]"
+		   echo "Call:"
+		   echo " ./NOTEN.sh [Options]"
 		   echo
-		   echo "Optionen:"
-		   echo -e " -u\tBenutzername spezifizieren"
-		   echo -e " -p\tPasswort spezifizieren"
+		   echo "Options:"
+		   echo -e " -u\tSet username"
+		   echo -e " -p\tSet password"
 		   echo
-		   echo "Für weitere Einzelheiten siehe https://github.com/neinkob15/DualisApp"
+		   echo "For more details see https://github.com/neinkob15/DualisApp"
 		   exit 0;;
 	esac
 done
