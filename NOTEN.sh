@@ -76,6 +76,13 @@ do
 	fi
 done
 l=$i
+
+ScriptLoc=$(readlink -f "$0")
+
+if [ $i -eq 0 ]; then
+	exec "$ScriptLoc"
+fi
+
 echo "["
 # loop through semesters
 for (( m=0; m<$l; m++ ))
