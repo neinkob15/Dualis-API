@@ -1,7 +1,5 @@
 #!/bin/bash
 
-enableJson=0
-
 while getopts hju:p: opt
 do
 	case $opt in
@@ -30,7 +28,9 @@ then
 	echo "Password cannot be empty"
 	exit 1
 fi
+bug1=0
 
+while [ $bug1 -eq 0 ]; do
 
 curl -X POST -c "cookie" -s \
 	-F "usrname=${username}" \
@@ -42,11 +42,11 @@ curl -X POST -c "cookie" -s \
 	-F 'menuno=000324' \
 	-F 'menu_type=classic' \
 	-D 'header' \
-	"https://dualis.dhbw.de/scripts/mgrqcgi" > /dev/null
+	"https://dualis.dhbw.de/scripts/mgrqispi.dll" > /dev/null
 
 argVar=$(sed -n 's/.*ARGUMENTS=//p' header)
 
-url="https://dualis.dhbw.de/scripts/mgrqcgi?APPNAME=CampusNet&PRGNAME=COURSERESULTS&ARGUMENTS=${argVar}"
+url="https://dualis.dhbw.de/scripts/mgrqispi.dll?APPNAME=CampusNet&PRGNAME=COURSERESULTS&ARGUMENTS=${argVar}"
 url=${url%$'\r'}
 
 curl -X GET -b ./cookie -s "${url}" > page.html
@@ -76,17 +76,20 @@ do
 	fi
 done
 l=$i
-
-ScriptLoc=$(readlink -f "$0")
-
+now=$(date)
 if [ $i -eq 0 ]; then
-	exec "$ScriptLoc"
+	echo "$now"
+else
+	bug1=1
 fi
+done
 
 echo "["
 # loop through semesters
 for (( m=0; m<$l; m++ ))
 do
+	bug2=0
+	while [ $bug2 -eq 0 ]; do
 	semester=$m
 	echo "  {"
 	echo "    \"semester\":\"${arrSem[semester]}\","
@@ -95,8 +98,8 @@ do
 	arg1=$(echo $argVar | cut -d"," -f1)
 	arg2=$(echo $argVar | cut -d"," -f2)
 
-	url2="https://dualis.dhbw.de/scripts/mgrqcgi?APPNAME=CampusNet&PRGNAME=COURSERESULTS&ARGUMENTS=$arg1,$arg2,-N${arrNum[semester]}"
-
+	url2="https://dualis.dhbw.de/scripts/mgrqispi.dll?APPNAME=CampusNet&PRGNAME=COURSERESULTS&ARGUMENTS=$arg1,$arg2,-N${arrNum[semester]}"
+	
 	curl -b ./cookie -s $url2 > page.html
 
 	lines=$(sed -n '/.*<tbody>/,/.*<\/tbody>/p' page.html)
@@ -106,7 +109,7 @@ do
 
 	arrModules=()
 	arrLinks=()
-
+	
 	i=0
 	j=0
 	k=0
@@ -127,6 +130,13 @@ do
 	done
 
 # loop through modules
+	if [ $k -eq 0 ]; then
+		echo "$now"
+	else
+		bug2=1
+	fi
+	done
+
 	for (( c=0; c<$k; c++ ))
 	do
 		module=$c
