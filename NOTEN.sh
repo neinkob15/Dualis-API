@@ -28,9 +28,7 @@ then
 	echo "Password cannot be empty"
 	exit 1
 fi
-bug1=0
 
-while [ $bug1 -eq 0 ]; do
 
 curl -X POST -c "cookie" -s \
 	-F "usrname=${username}" \
@@ -77,19 +75,12 @@ do
 done
 l=$i
 now=$(date)
-if [ $i -eq 0 ]; then
-	echo "$now"
-else
-	bug1=1
-fi
-done
 
 echo "["
 # loop through semesters
 for (( m=0; m<$l; m++ ))
 do
-	bug2=0
-	while [ $bug2 -eq 0 ]; do
+
 	semester=$m
 	echo "  {"
 	echo "    \"semester\":\"${arrSem[semester]}\","
@@ -99,7 +90,8 @@ do
 	arg2=$(echo $argVar | cut -d"," -f2)
 
 	url2="https://dualis.dhbw.de/scripts/mgrqispi.dll?APPNAME=CampusNet&PRGNAME=COURSERESULTS&ARGUMENTS=$arg1,$arg2,-N${arrNum[semester]}"
-	
+
+
 	curl -b ./cookie -s $url2 > page.html
 
 	lines=$(sed -n '/.*<tbody>/,/.*<\/tbody>/p' page.html)
@@ -129,14 +121,7 @@ do
 		fi
 	done
 
-# loop through modules
-	if [ $k -eq 0 ]; then
-		echo "$now"
-	else
-		bug2=1
-	fi
-	done
-
+	# loop through modules
 	for (( c=0; c<$k; c++ ))
 	do
 		module=$c
@@ -148,8 +133,14 @@ do
 		curl -b ./cookie -s "${arrLinks[module]}" > page.html
 		lines=$(sed -n '/Versuch/,/Bausteine/p' page.html)
 
+#		if ! [ -z "{$lines}" ]; then
+#			echo $lines > bug.txt
+#			bug3=1
+#		fi
+
 		flag=0
 		flag2=0
+		lineCount=0
 		examName=""
 		for line in $lines
 		do
@@ -181,6 +172,7 @@ do
 										percent=$(echo $line | cut -d "(" -f2 | cut -d ")" -f1 )
 										echo "            \"exam\":\"$examName ($percent)\","
 									fi
+									lineCount=$((lineCount+1))
 								fi
 							fi
 						fi
@@ -198,18 +190,23 @@ do
 						if [[ $line == *"<td"* ]]; then
 							grade=$(echo "$line" | sed 's/.*>\(.*\)<.*/\1/')
 							grade=$(echo $grade | sed 's/\r//g' )
-							echo "            \"grade\":\"$grade\""
-							flag2=1
+							if ! [[ $grade == *")"* ]]; then
+								echo "            \"grade\":\"$grade\""
+								flag2=1
+							fi
 						else
 							grade=$(echo "$line" | sed 's/^ *//g' | sed 's/noch nicht gesetzt/-/g')
 							grade=$(echo $grade | sed 's/\r//g' )
-							echo "            \"grade\":\"$grade\""
-							flag2=1
+							if ! [[ $grade == *")"* ]]; then
+								echo "            \"grade\":\"$grade\""
+								flag2=1
+							fi
 						fi
 					fi
 				fi
 			fi
 		done
+
 		echo "          }"
 		echo "        ]"
 		if [ $c -eq $((k-1)) ]; then
