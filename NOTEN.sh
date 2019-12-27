@@ -190,6 +190,7 @@ do
 						if [[ $line == *"<td"* ]]; then
 							grade=$(echo "$line" | sed 's/.*>\(.*\)<.*/\1/')
 							grade=$(echo $grade | sed 's/\r//g' )
+							grade=$(echo $grade | sed 's/ //g' )
 							if ! [[ $grade == *")"* ]]; then
 								echo "            \"grade\":\"$grade\""
 								flag2=1
@@ -197,6 +198,10 @@ do
 						else
 							grade=$(echo "$line" | sed 's/^ *//g' | sed 's/noch nicht gesetzt/-/g')
 							grade=$(echo $grade | sed 's/\r//g' )
+							grade=$(echo $grade | sed 's/ //g' )
+
+
+
 							if ! [[ $grade == *")"* ]]; then
 								echo "            \"grade\":\"$grade\""
 								flag2=1
