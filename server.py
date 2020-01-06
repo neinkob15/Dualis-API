@@ -3,10 +3,22 @@
 from flask import Flask, jsonify, request, Response
 from flask_httpauth import HTTPBasicAuth
 import subprocess
+from flask_cors import CORS
+from flask_caching import Cache
+
+config = {
+    "DEBUG": True,
+    "CACHE_TYPE": "simple",
+    "CACHE_DEFAULT_TIMEOUT": 0
+}
 
 # creating a Flask app
 app = Flask(__name__)
 auth = HTTPBasicAuth()
+app.config.from_mapping(config)
+CORS(app)
+cache = Cache(app)
+
 
 def pass_store():
     pass_store.var = 'mypass'
@@ -30,6 +42,7 @@ pass_store()
 # returns the data that we send when we use POST.
 @app.route('/', methods = ['GET', 'POST'])
 @auth.login_required
+@cache.cached(timeout=20)
 def home():
     if(request.method == 'GET'):
         cmd = (['/opt/dualis-app/NOTEN.sh', '-u', auth.username(), '-p', get_password(auth.username())])
