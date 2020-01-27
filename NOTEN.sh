@@ -140,6 +140,7 @@ do
 
 		flag=0
 		flag2=0
+		flag3=0
 		lineCount=0
 		examName=""
 		for line in $lines
@@ -168,9 +169,11 @@ do
 									fi
 									if [ -z $examName ]; then
 										echo "            \"exam\":\"$line\","
+										flag3=1
 									else
 										percent=$(echo $line | cut -d "(" -f2 | cut -d ")" -f1 )
 										echo "            \"exam\":\"$examName ($percent)\","
+										flag3=1
 									fi
 									lineCount=$((lineCount+1))
 								fi
@@ -212,7 +215,9 @@ do
 			fi
 		done
 
-		echo "          }"
+		if ! [ $flag3 -eq 0 ];then
+			echo "          }"
+		fi
 		echo "        ]"
 		if [ $c -eq $((k-1)) ]; then
 			echo "      }"
