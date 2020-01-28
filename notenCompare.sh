@@ -11,8 +11,8 @@ if [ -z "$password" ];then
 	exit 1
 fi
 
-/bin/bash /opt/dualis-app/NOTEN.sh -u $username -p $password > /opt/notenCompare/noten.log
-result=$(/usr/bin/diff -uNb -B4 /opt/notenCompare/noten.log /opt/notenCompare/noten2.log | grep -v '^+' | tail -n +3 | sed 's/^[-+]/ /g')
+/bin/bash /opt/dualis-app/NOTEN.sh -u $username -p $password > /opt/dualis-app/noten.log
+result=$(/usr/bin/diff -uNb -B4 /opt/dualis-app/noten.log /opt/dualis-app/noten2.log | grep -v '^+' | tail -n +3 | sed 's/^[-+]/ /g')
 
 mailText=""
 
@@ -34,12 +34,12 @@ do
 	grade=$(echo $block | sed 's/.*"grade":"\([^"]*\)".*/\1/g')
 #	echo "$grade => $exam [$module]"
 	if [[ $grade == "-" ]];then
-		cp /opt/notenCompare/noten.log /opt/notenCompare/noten2.log
+		cp /opt/dualis-app/noten.log /opt/dualis-app/noten2.log
 		echo "Keine neuen Noten. (ERR 008)"
 		exit 0
 	fi
 	if [[ $grade == *"{"* ]];then
-		cp /opt/notenCompare/noten.log /opt/notenCompare/noten2.log
+		cp /opt/dualis-app/noten.log /opt/dualis-app/noten2.log
 		echo "Keine neuen Noten. (ERR 009)"
 		exit 0
 	fi
@@ -55,4 +55,4 @@ fi
 
 /usr/bin/mail -s 'Neue Noten!' -a From:NotenAdmin\<jakob@neinkob.de\> jakob-gietl@gmx.de <<< $(echo "$mailText")
 echo "$mailText"
-mv /opt/notenCompare/noten.log /opt/notenCompare/noten2.log
+mv /opt/dualis-app/noten.log /opt/dualis-app/noten2.log
