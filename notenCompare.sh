@@ -51,9 +51,10 @@ mailText=$(echo "$mailText" | tail -n +2)
 
 if [ -z "$mailText" ];then
 	echo "Keine neuen Noten."
+	cp /opt/dualis-app/noten.log /opt/dualis-app/noten2.log
 	exit 0
 fi
 
-#/usr/bin/mail -s 'Neue Noten!' -a From:NotenAdmin\<jakob@neinkob.de\> jakob-gietl@gmx.de <<< $(echo "$mailText")
+/usr/bin/mail -s 'Neue Noten!' -a From:NotenAdmin\<jakob@neinkob.de\> jakob-gietl@gmx.de <<< $(echo "$mailText")
 echo "$mailText"
-mv /opt/dualis-app/noten.log /opt/dualis-app/noten2.log
+cp /opt/dualis-app/noten.log /opt/dualis-app/noten2.log
