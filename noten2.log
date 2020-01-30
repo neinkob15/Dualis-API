@@ -26,6 +26,10 @@
           {
             "exam":"Web Engineering 2 (50%)",
             "grade":"95,0"
+          },
+          {
+            "exam":"Verteilte Systeme (50%)",
+            "grade":"93,0"
           }
         ]
       },
@@ -59,10 +63,6 @@
       {
         "name":"Wahlmodul Informatik III",
         "exams": [
-          {
-            "exam":"Kombinierte Prüfung (100%)",
-            "grade":"-"
-          }
         ]
       }
     ]

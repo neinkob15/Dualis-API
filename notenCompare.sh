@@ -1,6 +1,6 @@
 #!/bin/bash
 
-. ./credentials.conf
+. /opt/dualis-app/credentials.conf
 
 if [ -z "$username" ];then
 	echo "no username!"
@@ -12,47 +12,48 @@ if [ -z "$password" ];then
 fi
 
 /bin/bash /opt/dualis-app/NOTEN.sh -u $username -p $password > /opt/dualis-app/noten.log
-result=$(/usr/bin/diff -uNb -B4 /opt/dualis-app/noten.log /opt/dualis-app/noten2.log | grep -v '^+' | tail -n +3 | sed 's/^[-+]/ /g')
 
-mailText=""
+readarray -t a < /opt/dualis-app/noten.log
+readarray -t b < /opt/dualis-app/noten2.log
 
-if [ -z "$result" ];then
-	echo "Keine neuen Noten. (ERR 007)"
-	exit 0
-fi
+c=0
 
-
-
-IFS="]" read -ra array <<< "$(echo $result)"
-for block in "${array[@]}"
+for i in "${a[@]}"
 do
-	if ! [[ $block == *"name"* ]];then
-		continue
+	if [[ "$i" == *"\"name\""* ]];then
+		module=$(echo "$i" | sed 's/ *\"name\":\"\([^\"]*\)\".*/\1/g')
 	fi
-	module=$(echo $block | sed 's/.*"name":"\([^"]*\)".*/\1/g')
-	exam=$(echo $block | sed 's/.*"exam":"\([^"]*\)".*/\1/g')
-	grade=$(echo $block | sed 's/.*"grade":"\([^"]*\)".*/\1/g')
-#	echo "$grade => $exam [$module]"
-	if [[ $grade == "-" ]];then
-		cp /opt/dualis-app/noten.log /opt/dualis-app/noten2.log
-		echo "Keine neuen Noten. (ERR 008)"
-		exit 0
+	if [[ "$i" == *"\"exam\""* ]];then
+		exam=$(echo "$i" | sed 's/ *\"exam\":\"\([^\"]*\)\".*/\1/g')
 	fi
-	if [[ $grade == *"{"* ]];then
-		cp /opt/dualis-app/noten.log /opt/dualis-app/noten2.log
-		echo "Keine neuen Noten. (ERR 009)"
-		exit 0
+	if ! [[ "$i" == "${b[$c]}" ]];then
+
+		if ! [[ "$i" == *"{"* || "$i" == *"}"* || "$i" == *"]"* || "$i" == *"["* ]];then
+			if [[ "$i" == *"\"grade\""* ]];then
+				grade=$(echo "$i" | sed 's/ *\"grade\":\"\([^\"]*\)\".*/\1/g')
+				if ! [[ "$grade" == "-" ]];then
+					mailText=$(printf "%s\n%s => %s [%s]" "$mailText" "$grade" "$exam" "$module")
+				fi
+			fi
+		fi
+
+		f=$(echo "${b[$c]}" | sed 's/^ *//g' | head -c 5)
+		g=$(echo "$i" | sed 's/^ *//g' | head -c 5)
+	        if [[ "$g" == "$f" && "$i" == *"\"grade\""* ]];then
+                	c=$((c+1))
+	        fi
+	else
+		c=$((c+1))
 	fi
-	mailText=$(printf "%s\n%s => %s [%s]" "$mailText" "$grade" "$exam" "$module")
 done
-#remove empty line on top
+
 mailText=$(echo "$mailText" | tail -n +2)
 
 if [ -z "$mailText" ];then
-	echo "Keine neuen Noten. (ERR 010)"
+	echo "Keine neuen Noten."
 	exit 0
 fi
 
-/usr/bin/mail -s 'Neue Noten!' -a From:NotenAdmin\<jakob@neinkob.de\> jakob-gietl@gmx.de <<< $(echo "$mailText")
+#/usr/bin/mail -s 'Neue Noten!' -a From:NotenAdmin\<jakob@neinkob.de\> jakob-gietl@gmx.de <<< $(echo "$mailText")
 echo "$mailText"
 mv /opt/dualis-app/noten.log /opt/dualis-app/noten2.log

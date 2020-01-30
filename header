@@ -1,9 +1,9 @@
 HTTP/1.1 200 OK
 Content-Type: text/html
 Server: Microsoft-IIS/8.5
-REFRESH: 0; URL=/scripts/mgrqispi.dll?APPNAME=CampusNet&PRGNAME=STARTPAGE_DISPATCH&ARGUMENTS=-N594351878395369,-N000019,-N000000000000000
-Set-cookie: cnsc=E50CB75A0A4BF55B1F9E0F1EE42F7682; HttpOnly; secure
-MgxpaRuntimeExecutionTime: 265,0
+REFRESH: 0; URL=/scripts/mgrqispi.dll?APPNAME=CampusNet&PRGNAME=STARTPAGE_DISPATCH&ARGUMENTS=-N774523435783359,-N000019,-N000000000000000
+Set-cookie: cnsc=E93C1AD60797FD75F5D596EE63F1DE62; HttpOnly; secure
+MgxpaRuntimeExecutionTime: 297,0
 MgBrokerWaitTime: 0
 Strict-Transport-Security: maxage=31536000; includeSubDomains
 X-XSS-Protection: 1; mode=block
@@ -11,6 +11,6 @@ X-Frame-Options: SAMEORIGIN
 Content-Security-Policy: default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline' 'unsafe-eval'
 Referrer-Policy: strict-origin
 X-Content-Type-Options: nosniff
-Date: Tue, 28 Jan 2020 17:43:13 GMT
+Date: Thu, 30 Jan 2020 22:39:24 GMT
 Content-Length: 72
 
