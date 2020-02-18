@@ -1,5 +1,11 @@
 #!/bin/bash
 
+while ! mkdir /opt/dualis-app/.lock 2>/dev/null
+do
+	sleep 1
+done
+trap "rm -rf /opt/dualis-app/.lock; exit" INT TERM EXIT
+
 while getopts hju:p: opt
 do
 	case $opt in
