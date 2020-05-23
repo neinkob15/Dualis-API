@@ -40,6 +40,8 @@ def home():
         o, e = proc.communicate()
 
         data = o.decode('utf-8')
+        if (data == "[\n]\n"):
+            return Response("{\"error\": {\"status\": 401, \"message\":\"Bad Authentication data.\"}}", status=401, mimetype='application/json')
         return Response(data, mimetype='application/json')
 
 
