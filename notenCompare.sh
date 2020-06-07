@@ -13,10 +13,10 @@ fi
 
 /bin/bash /opt/dualis-app/NOTEN.sh -u $username -p $password > /opt/dualis-app/noten.log
 
-serialized1=$(cat noten.log | jq -r '.[] | .modules[] as $m | $m.exams[] as $e | "\($e.grade) => \($e.exam) [\($m.name)]"')
-serialized2=$(cat noten2.log | jq -r '.[] | .modules[] as $m | $m.exams[] as $e | "\($e.grade) => \($e.exam) [\($m.name)]"')
+serialized1=$(cat /opt/dualis-app/noten.log | /usr/bin/jq -r '.[] | .modules[] as $m | $m.exams[] as $e | "\($e.grade) => \($e.exam) [\($m.name)]"')
+serialized2=$(cat /opt/dualis-app/noten2.log | /usr/bin/jq -r '.[] | .modules[] as $m | $m.exams[] as $e | "\($e.grade) => \($e.exam) [\($m.name)]"')
 
-mailText=$(diff --changed-group-format="%<" --unchanged-group-format="" <(echo "$serialized1") <(echo "$serialized2"))
+mailText=$(/usr/bin/diff --changed-group-format="%<" --unchanged-group-format="" <(echo "$serialized1") <(echo "$serialized2"))
 
 if [ -z "$mailText" ];then
 	echo "Keine neuen Noten."
