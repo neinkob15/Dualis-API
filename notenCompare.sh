@@ -25,5 +25,7 @@ if [ -z "$mailText" ];then
 fi
 
 /usr/bin/mail -s 'Neue Noten!' -a From:NotenAdmin\<jakob@neinkob.de\> jakob-gietl@gmx.de <<< $(echo "$mailText")
+/usr/bin/curl -g -X POST "https://api.telegram.org/bot$bot/sendMessage?chat_id=$chatid&text=$mailText"
+
 echo "$mailText"
 cp /opt/dualis-app/noten.log /opt/dualis-app/noten2.log
