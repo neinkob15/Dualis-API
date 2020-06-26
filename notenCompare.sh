@@ -18,6 +18,8 @@ serialized2=$(cat /opt/dualis-app/noten2.log | /usr/bin/jq -r '.[] | .modules[] 
 
 mailText=$(/usr/bin/diff --changed-group-format="%<" --unchanged-group-format="" <(echo "$serialized1") <(echo "$serialized2"))
 
+echo "$mailText" > t
+
 if [ -z "$mailText" ];then
 	echo "Keine neuen Noten."
 	cp /opt/dualis-app/noten.log /opt/dualis-app/noten2.log
@@ -25,7 +27,8 @@ if [ -z "$mailText" ];then
 fi
 
 /usr/bin/mail -s 'Neue Noten!' -a From:NotenAdmin\<jakob@neinkob.de\> jakob-gietl@gmx.de <<< $(echo "$mailText")
-/usr/bin/curl -g -X POST "https://api.telegram.org/bot$bot/sendMessage?chat_id=$chatid&text=$mailText"
+mailText2=$(echo "$mailText" | sed -z 's/\n/%0A/g')
+/usr/bin/curl -s -g -X POST "https://api.telegram.org/bot$bot/sendMessage?chat_id=$chatid&text=$mailText2" > /dev/null
 
 echo "$mailText"
 cp /opt/dualis-app/noten.log /opt/dualis-app/noten2.log
