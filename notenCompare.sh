@@ -28,7 +28,7 @@ fi
 
 /usr/bin/mail -s 'Neue Noten!' -a From:NotenAdmin\<jakob@neinkob.de\> jakob-gietl@gmx.de <<< $(echo "$mailText")
 mailText2=$(echo "$mailText" | sed -z 's/\n/%0A/g')
-/usr/bin/curl -s -g -X POST "https://api.telegram.org/bot$bot/sendMessage?chat_id=$chatid&text=$mailText2" > /dev/null
+/usr/bin/curl -s -g -X POST "https://api.telegram.org/bot$bot/sendMessage?chat_id=$chatid" --data-urlencode "text=$mailText2" > /dev/null
 
 echo "$mailText"
 cp /opt/dualis-app/noten.log /opt/dualis-app/noten2.log

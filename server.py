@@ -35,7 +35,7 @@ pass_store()
 @auth.login_required
 def home():
     if(request.method == 'GET'):
-        cmd = (['./NOTEN.sh', '-u', auth.username(), '-p', get_password(auth.username())])
+        cmd = (['/opt/dualis-app/NOTEN.sh', '-u', auth.username(), '-p', get_password(auth.username())])
         proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         o, e = proc.communicate()
 
@@ -47,6 +47,5 @@ def home():
 
 # driver function
 if __name__ == '__main__':
-
     app.run(debug = True, host='0.0.0.0', port='5001')
 

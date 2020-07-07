@@ -1,14 +1,13 @@
-FROM python:3-alpine
+FROM python:3-buster
 
-WORKDIR /opt/dualis-app
+WORKDIR /
 
 COPY requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt
-RUN apk add --no-cache bash
-RUN apk add --no-cache curl
+RUN apt-get update && apt-get install curl
 
-COPY . .
+COPY server.py ./
 
 EXPOSE 5001
 
-CMD [ "python", "./server.py" ]
+CMD [ "python", "-u", "./server.py" ]
