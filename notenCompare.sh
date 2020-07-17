@@ -19,7 +19,7 @@ serialized2=$(cat /opt/dualis-app/noten2.log | /usr/bin/jq -r '.[] | .modules[] 
 mailText=$(/usr/bin/diff --changed-group-format="%<" --unchanged-group-format="" <(echo "$serialized1") <(echo "$serialized2") | grep "^[^-]")
 
 
-if [ -z "$mailText" ];then
+if [ -z "$mailText" ] || [[ $(wc -l <(echo "$mailText")) > 4 ]];then
 	echo "Keine neuen Noten."
 	cp /opt/dualis-app/noten.log /opt/dualis-app/noten2.log
 	exit 0
