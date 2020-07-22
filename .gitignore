@@ -1,4 +1,5 @@
 *.conf
+.lock/
 cookie
 header
 noten.log

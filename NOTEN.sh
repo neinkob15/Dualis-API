@@ -1,10 +1,10 @@
 #!/bin/bash
 
-while ! mkdir /opt/dualis-app/.lock 2>/dev/null
+while ! mkdir ./.lock 2>/dev/null
 do
 	sleep 1
 done
-trap "rm -rf /opt/dualis-app/.lock; exit" INT TERM EXIT
+trap "rm -rf ./.lock; exit" INT TERM EXIT
 
 while getopts hju:p: opt
 do
