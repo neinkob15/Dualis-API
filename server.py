@@ -44,6 +44,19 @@ def home():
             return Response("{\"error\": {\"status\": 401, \"message\":\"Bad Authentication data!\"}}", status=401, mimetype='application/json')
         return Response(data, mimetype='application/json')
 
+@app.route('/modules', methods = ['GET', 'POST'])
+@auth.login_required
+def modules():
+    if(request.method == 'GET'):
+        cmd = (['/opt/dualis-app/MODULE.sh', '-u', auth.username(), '-p', get_password(auth.username())])
+        proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        o, e = proc.communicate()
+
+        data = o.decode('utf-8')
+        if (data == "[\n]\n"):
+            return Response("{\"error\": {\"status\": 401, \"message\":\"Bad Authentication data!\"}}", status=401, mimetype='application/json')
+        return Response(data, mimetype='application/json')
+
 
 # driver function
 if __name__ == '__main__':
