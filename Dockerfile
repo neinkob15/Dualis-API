@@ -8,6 +8,10 @@ RUN apt-get update && apt-get install curl
 
 COPY server.py ./
 
+RUN mkdir -p /opt/dualis-app
+COPY NOTEN.sh /opt/dualis-app/NOTEN.sh
+COPY MODULE.sh /opt/dualis-app/MODULE.sh
+
 EXPOSE 5001
 
-CMD [ "python", "-u", "./server.py" ]
+CMD [ "python", "/server.py" ]

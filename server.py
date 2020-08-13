@@ -1,11 +1,8 @@
-# Using flask to make an api
-# import necessary libraries and functions
 from flask import Flask, jsonify, request, Response
 from flask_httpauth import HTTPBasicAuth
 import subprocess
 from flask_cors import CORS
 
-# creating a Flask app
 app = Flask(__name__)
 auth = HTTPBasicAuth()
 CORS(app)
@@ -28,37 +25,28 @@ def get_password(username):
 
 pass_store()
 
-# on the terminal type: curl http://127.0.0.1:5000/
-# returns hello world when we use GET.
-# returns the data that we send when we use POST.
-@app.route('/', methods = ['GET', 'POST'])
+
+@app.route('/grades', methods = ['GET'])
 @auth.login_required
-def home():
-    if(request.method == 'GET'):
-        cmd = (['/opt/dualis-app/NOTEN.sh', '-u', auth.username(), '-p', get_password(auth.username())])
-        proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        o, e = proc.communicate()
+def myhome():
+    cmd = ['/bin/bash', '/opt/dualis-app/NOTEN.sh', '-u', auth.username(), '-p', get_password(auth.username())]
+    o = subprocess.check_output(cmd, stderr=subprocess.STDOUT)
+    data = o.decode('utf-8')
+    if (data == "[\n]\n"):
+        return Response("{\"error\": {\"status\": 401, \"message\":\"Bad Authentication data!\"}}", status=401, mimetype='application/json')
+    return Response(data, mimetype='application/json')
 
-        data = o.decode('utf-8')
-        if (data == "[\n]\n"):
-            return Response("{\"error\": {\"status\": 401, \"message\":\"Bad Authentication data!\"}}", status=401, mimetype='application/json')
-        return Response(data, mimetype='application/json')
-
-@app.route('/modules', methods = ['GET', 'POST'])
+@app.route('/modules', methods = ['GET'])
 @auth.login_required
-def modules():
-    if(request.method == 'GET'):
-        cmd = (['/opt/dualis-app/MODULE.sh', '-u', auth.username(), '-p', get_password(auth.username())])
-        proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        o, e = proc.communicate()
-
-        data = o.decode('utf-8')
-        if (data == "[\n]\n"):
-            return Response("{\"error\": {\"status\": 401, \"message\":\"Bad Authentication data!\"}}", status=401, mimetype='application/json')
-        return Response(data, mimetype='application/json')
+def mymodules():
+    cmd = ['/bin/bash', '/opt/dualis-app/MODULE.sh', '-u', auth.username(), '-p', get_password(auth.username())]
+    o = subprocess.check_output(cmd, stderr=subprocess.STDOUT)
+    data = o.decode('utf-8')
+    if (data == "[\n]\n"):
+        return Response("{\"error\": {\"status\": 401, \"message\":\"Bad Authentication data!\"}}", status=401, mimetype='application/json')
+    return Response(data, mimetype='application/json')
 
 
-# driver function
 if __name__ == '__main__':
     app.run(debug = True, host='0.0.0.0', port='5001')
 

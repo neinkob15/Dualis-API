@@ -13,7 +13,7 @@ do
 		p) password=$OPTARG;;
 		h) echo
 		   echo "Call:"
-		   echo " ./NOTEN.sh [Options]"
+		   echo " ./MODULE.sh [Options]"
 		   echo
 		   echo "Options:"
 		   echo -e " -u\tSet username"
