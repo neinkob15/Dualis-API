@@ -18,6 +18,4 @@ The options -u and -p are mandatory fields, without them, grades cannot be gathe
 
 ## webserver
 
-Alternatively you can use the webserver. See here for an example: https://neinkob.de/grades.
-<br />Use your dhbw email (mustermann.max@dh-karlsruhe.de) as username and your password. 
-
+Alternatively you can use the webserver server.py.
